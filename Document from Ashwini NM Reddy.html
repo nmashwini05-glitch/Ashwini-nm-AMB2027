@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Crop Recommendation System — Chikkaballapur District</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --earth: #3d2b1f;
+    --clay: #7a4f35;
+    --ochre: #c8841a;
+    --gold: #e8a020;
+    --sun: #f5c842;
+    --grass: #5a7c3a;
+    --leaf: #6d9b3a;
+    --sky: #e8f4e8;
+    --cream: #fdf6eb;
+    --paper: #faf3e0;
+    --smoke: #f0ebe0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--earth);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #2a1a0e 0%, #3d2b1f 40%, #5a3d28 100%);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 20% 50%, rgba(200, 132, 26, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, rgba(90, 124, 58, 0.12) 0%, transparent 50%);
+  }
+
+  .header-inner {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 32px 40px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .header-badge {
+    display: inline-block;
+    background: rgba(200, 132, 26, 0.2);
+    border: 1px solid rgba(200, 132, 26, 0.4);
+    color: var(--sun);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+
+  header h1 span { color: var(--gold); }
+
+  header p {
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: 480px;
+  }
+
+  .header-meta {
+    text-align: right;
+    color: rgba(255,255,255,0.4);
+    font-size: 12px;
+    line-height: 1.8;
+  }
+
+  .header-meta strong {
+    display: block;
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* ACCURACY BAND */
+  .accuracy-band {
+    background: var(--grass);
+    padding: 12px 32px;
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+  }
+
+  .stat {
+    text-align: center;
+    color: rgba(255,255,255,0.9);
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+    margin-top: 2px;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 60px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(122, 79, 53, 0.2);
+  }
+
+  /* FORM GRID */
+  .form-card {
+    background: #fff;
+    border-radius: 4px;
+    border: 1px solid rgba(122, 79, 53, 0.12);
+    padding: 32px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 16px rgba(61, 43, 31, 0.06);
+  }
+
+  .form-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--earth);
+    margin-bottom: 4px;
+  }
+
+  .form-card .card-desc {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 24px;
+  }
+
+  .input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--clay);
+    letter-spacing: 0.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .field label .unit {
+    font-weight: 400;
+    color: #aaa;
+    font-size: 11px;
+    letter-spacing: 0;
+  }
+
+  .field input, .field select {
+    border: 1.5px solid rgba(122, 79, 53, 0.2);
+    border-radius: 3px;
+    padding: 10px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--earth);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    appearance: none;
+  }
+
+  .field input:focus, .field select:focus {
+    border-color: var(--ochre);
+    background: #fff;
+  }
+
+  .field .hint {
+    font-size: 11px;
+    color: #b0a090;
+  }
+
+  /* RANGE SLIDER */
+  .range-wrap {
+    position: relative;
+  }
+
+  .range-wrap input[type=range] {
+    width: 100%;
+    height: 4px;
+    border: none;
+    background: linear-gradient(to right, var(--ochre) 0%, var(--ochre) var(--pct, 50%), rgba(122,79,53,0.15) var(--pct, 50%), rgba(122,79,53,0.15) 100%);
+    border-radius: 2px;
+    padding: 0;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .range-wrap input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--ochre);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    cursor: pointer;
+    border: 2px solid #fff;
+  }
+
+  .range-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ochre);
+    text-align: right;
+    margin-top: 4px;
+  }
+
+  /* SEASON TOGGLE */
+  .season-toggle {
+    display: flex;
+    border: 1.5px solid rgba(122, 79, 53, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    background: var(--cream);
+  }
+
+  .season-toggle input[type=radio] { display: none; }
+
+  .season-toggle label {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    color: #aaa;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .season-toggle input[type=radio]:checked + label {
+    background: var(--ochre);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* SUBMIT */
+  .btn-recommend {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--clay) 0%, var(--earth) 100%);
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .btn-recommend::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--ochre), var(--grass));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .btn-recommend:hover::before { opacity: 1; }
+  .btn-recommend span { position: relative; z-index: 1; }
+
+  .btn-recommend:active { transform: scale(0.99); }
+
+  /* RESULT */
+  #result-section {
+    display: none;
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-card {
+    background: linear-gradient(135deg, #1e3a0f 0%, #2a5018 100%);
+    border-radius: 4px;
+    padding: 36px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .result-card::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(232, 160, 32, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .result-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+  }
+
+  .result-crop {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 900;
+    color: var(--sun);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .result-science {
+    font-size: 13px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.6;
+    max-width: 520px;
+  }
+
+  .confidence-bar {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    height: 6px;
+    overflow: hidden;
+  }
+
+  .confidence-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--gold), var(--sun));
+    border-radius: 2px;
+    transition: width 0.8s ease;
+  }
+
+  .confidence-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* WHY CARD */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .why-item {
+    background: #fff;
+    border: 1px solid rgba(122,79,53,0.1);
+    border-radius: 3px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .why-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .why-text strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--earth);
+    margin-bottom: 2px;
+  }
+
+  .why-text span {
+    font-size: 12px;
+    color: #999;
+    line-height: 1.5;
+  }
+
+  /* FEATURE IMPORTANCE */
+  .importance-card {
+    background: #fff;
+    border: 1px solid rgba(122,79,53,0.1);
+    border-radius: 4px;
+    padding: 24px 28px;
+    margin-bottom: 24px;
+  }
+
+  .importance-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--earth);
+    margin-bottom: 18px;
+  }
+
+  .fi-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .fi-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--clay);
+    width: 110px;
+    flex-shrink: 0;
+  }
+
+  .fi-bar-bg {
+    flex: 1;
+    background: var(--smoke);
+    border-radius: 2px;
+    height: 8px;
+    overflow: hidden;
+  }
+
+  .fi-bar {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--clay), var(--ochre));
+  }
+
+  .fi-score {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ochre);
+    width: 36px;
+    text-align: right;
+  }
+
+  /* RESET */
+  .btn-reset {
+    background: transparent;
+    border: 1.5px solid rgba(122,79,53,0.25);
+    color: var(--clay);
+    padding: 10px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .btn-reset:hover {
+    border-color: var(--clay);
+    background: var(--smoke);
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: #bbb;
+    font-size: 12px;
+    border-top: 1px solid rgba(122,79,53,0.08);
+    margin-top: 12px;
+  }
+
+  footer strong { color: var(--clay); }
+
+  @media (max-width: 600px) {
+    .header-inner { grid-template-columns: 1fr; }
+    .header-meta { text-align: left; }
+    .accuracy-band { gap: 24px; }
+    .input-grid { grid-template-columns: 1fr 1fr; }
+    .why-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div>
+      <div class="header-badge">EAI421 · AI & ML in Agriculture</div>
+      <h1>AI-Based <span>Crop</span><br>Recommendation</h1>
+      <p>Enter your soil and climate parameters to receive a data-driven crop recommendation calibrated to Chikkaballapur District's agro-climatic conditions.</p>
+    </div>
+    <div class="header-meta">
+      <strong>Random Forest Classifier</strong>
+      Chikkaballapur District<br>
+      Karnataka, India<br>
+      2014 – 2023 Dataset<br><br>
+      <strong>Submitted to</strong>
+      Dr. Kumar Raja<br>
+      GKVK, Bangalore
+    </div>
+  </div>
+</header>
+
+<div class="accuracy-band">
+  <div class="stat">
+    <div class="stat-num">90.0%</div>
+    <div class="stat-label">Test Accuracy</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">87.5%</div>
+    <div class="stat-label">5-Fold CV Accuracy</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">0.90</div>
+    <div class="stat-label">Macro F1-Score</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">8</div>
+    <div class="stat-label">Crop Classes</div>
+  </div>
+</div>
+
+<main>
+
+  <!-- CLIMATE INPUTS -->
+  <div class="section-label">Climate Parameters</div>
+  <div class="form-card">
+    <h2>Rainfall & Temperature</h2>
+    <p class="card-desc">Seasonal aggregates from IMD Chikkaballapur Station (Code: 432120)</p>
+    <div class="input-grid">
+
+      <div class="field">
+        <label>Season</label>
+        <div class="season-toggle">
+          <input type="radio" name="season" id="kharif" value="0" checked>
+          <label for="kharif">☀️ Kharif</label>
+          <input type="radio" name="season" id="rabi" value="1">
+          <label for="rabi">🌾 Rabi</label>
+        </div>
+        <div class="hint">Kharif: Jun–Nov &nbsp;|&nbsp; Rabi: Dec–May</div>
+      </div>
+
+      <div class="field">
+        <label>Rainfall <span class="unit">mm / season</span></label>
+        <div class="range-wrap">
+          <input type="range" id="rainfall" min="100" max="1100" value="820" oninput="updateRange(this,'rain-val',0,1100)">
+        </div>
+        <div class="range-val" id="rain-val">820 mm</div>
+        <div class="hint">District avg: 750–950 mm (Kharif)</div>
+      </div>
+
+      <div class="field">
+        <label>Avg Temperature <span class="unit">°C</span></label>
+        <div class="range-wrap">
+          <input type="range" id="avg_temp" min="18" max="32" value="26" step="0.1" oninput="updateRange(this,'avgt-val',18,32)">
+        </div>
+        <div class="range-val" id="avgt-val">26.0 °C</div>
+        <div class="hint">Kharif: 25–27°C &nbsp;|&nbsp; Rabi: 21–24°C</div>
+      </div>
+
+      <div class="field">
+        <label>Max Temperature <span class="unit">°C</span></label>
+        <div class="range-wrap">
+          <input type="range" id="max_temp" min="26" max="42" value="34" step="0.1" oninput="updateRange(this,'maxt-val',26,42)">
+        </div>
+        <div class="range-val" id="maxt-val">34.0 °C</div>
+        <div class="hint">Typical Kharif peak: 33–36°C</div>
+      </div>
+
+      <div class="field">
+        <label>Min Temperature <span class="unit">°C</span></label>
+        <div class="range-wrap">
+          <input type="range" id="min_temp" min="12" max="26" value="20" step="0.1" oninput="updateRange(this,'mint-val',12,26)">
+        </div>
+        <div class="range-val" id="mint-val">20.0 °C</div>
+        <div class="hint">Rabi minimum can drop to ~12°C</div>
+      </div>
+
+      <div class="field">
+        <label>Humidity <span class="unit">%</span></label>
+        <div class="range-wrap">
+          <input type="range" id="humidity" min="30" max="95" value="65" oninput="updateRange(this,'hum-val',30,95)">
+        </div>
+        <div class="range-val" id="hum-val">65 %</div>
+        <div class="hint">Higher in Kharif; lower in Rabi</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SOIL INPUTS -->
+  <div class="section-label">Soil Parameters</div>
+  <div class="form-card">
+    <h2>Macronutrients & pH</h2>
+    <p class="card-desc">From Soil Health Card data (ICRISAT Alfisol baseline, Chikkaballapur)</p>
+    <div class="input-grid">
+
+      <div class="field">
+        <label>Nitrogen (N) <span class="unit">kg/ha</span></label>
+        <div class="range-wrap">
+          <input type="range" id="nitrogen" min="100" max="280" value="185" oninput="updateRange(this,'n-val',100,280)">
+        </div>
+        <div class="range-val" id="n-val">185 kg/ha</div>
+        <div class="hint">District avg: 164–195 kg/ha</div>
+      </div>
+
+      <div class="field">
+        <label>Phosphorus (P) <span class="unit">kg/ha</span></label>
+        <div class="range-wrap">
+          <input type="range" id="phosphorus" min="8" max="40" value="18" oninput="updateRange(this,'p-val',8,40)">
+        </div>
+        <div class="range-val" id="p-val">18 kg/ha</div>
+        <div class="hint">Alfisols are low-P: 14–20 typical</div>
+      </div>
+
+      <div class="field">
+        <label>Potassium (K) <span class="unit">kg/ha</span></label>
+        <div class="range-wrap">
+          <input type="range" id="potassium" min="150" max="260" value="198" oninput="updateRange(this,'k-val',150,260)">
+        </div>
+        <div class="range-val" id="k-val">198 kg/ha</div>
+        <div class="hint">Medium-high K in Deccan Alfisols</div>
+      </div>
+
+      <div class="field">
+        <label>Soil pH</label>
+        <div class="range-wrap">
+          <input type="range" id="ph" min="5.5" max="7.5" value="6.2" step="0.05" oninput="updateRange(this,'ph-val',5.5,7.5)">
+        </div>
+        <div class="range-val" id="ph-val">6.2</div>
+        <div class="hint">Chikkaballapur range: 6.0–6.6 (acidic–neutral)</div>
+      </div>
+
+    </div>
+  </div>
+
+  <button class="btn-recommend" onclick="recommend()">
+    <span>🌱 Get Crop Recommendation</span>
+  </button>
+
+  <!-- RESULT -->
+  <div id="result-section">
+
+    <div style="margin-top: 36px; margin-bottom: 16px;">
+      <div class="section-label">Model Output</div>
+    </div>
+
+    <div class="result-card">
+      <div class="result-tag">Recommended Crop — Random Forest Classifier</div>
+      <div class="result-crop" id="result-crop-name">Ragi (Finger Millet)</div>
+      <div class="result-science" id="result-rationale">Based on your soil and climate inputs, this crop is best suited for current conditions.</div>
+      <div class="confidence-bar"><div class="confidence-fill" id="conf-fill" style="width:0%"></div></div>
+      <div class="confidence-label"><span>Model Confidence</span><span id="conf-label">—</span></div>
+    </div>
+
+    <div class="section-label">Why This Crop?</div>
+    <div class="why-grid" id="why-grid"></div>
+
+    <div class="section-label">Feature Importance — Random Forest</div>
+    <div class="importance-card">
+      <h3>What drives the model's predictions</h3>
+      <div id="fi-bars"></div>
+    </div>
+
+    <button class="btn-reset" onclick="resetForm()">↩ Try Different Values</button>
+  </div>
+
+</main>
+
+<footer>
+  <strong>AI-Based Crop Recommendation System for Chikkaballapur District, Karnataka</strong><br>
+  Ashwini NM · Akshay B · Hanumanthi &nbsp;|&nbsp; EAI421 — Application of AI & ML in Agriculture &nbsp;|&nbsp; COA, GKVK, Bangalore 560065
+</footer>
+
+<script>
+// ─── RANGE SLIDER HELPERS ──────────────────────────────────────────────────
+function updateRange(el, displayId, min, max) {
+  const pct = ((el.value - min) / (max - min)) * 100;
+  el.style.setProperty('--pct', pct + '%');
+
+  const display = document.getElementById(displayId);
+  const id = el.id;
+  const v = parseFloat(el.value);
+
+  if (id === 'rainfall')   display.textContent = v + ' mm';
+  else if (id === 'ph')    display.textContent = v.toFixed(2);
+  else if (id === 'humidity') display.textContent = v + ' %';
+  else if (['nitrogen','phosphorus','potassium'].includes(id)) display.textContent = v + ' kg/ha';
+  else display.textContent = v.toFixed(1) + ' °C';
+}
+
+// Initialize sliders on load
+window.onload = () => {
+  document.querySelectorAll('input[type=range]').forEach(el => {
+    const min = parseFloat(el.min), max = parseFloat(el.max);
+    const pct = ((el.value - min) / (max - min)) * 100;
+    el.style.setProperty('--pct', pct + '%');
+  });
+};
+
+// ─── CROP KNOWLEDGE BASE ───────────────────────────────────────────────────
+const CROPS = {
+  'Ragi (Finger Millet)': {
+    emoji: '🌾',
+    color: '#5a7c3a',
+    minRain: 700, maxRain: 1050,
+    minAvgT: 23, maxAvgT: 28,
+    minN: 160, maxN: 220,
+    minPH: 5.8, maxPH: 6.8,
+    season: 0,
+    note: 'Ragi thrives in moderate-to-high rainfall, slightly acidic Alfisol soils, and warm Kharif temperatures. Primary staple and nutritional crop of Chikkaballapur.'
+  },
+  'Groundnut': {
+    emoji: '🥜',
+    color: '#c8841a',
+    minRain: 600, maxRain: 900,
+    minAvgT: 22, maxAvgT: 28,
+    minN: 150, maxN: 200,
+    minPH: 5.9, maxPH: 6.7,
+    season: -1, // both
+    note: 'Groundnut is nitrogen-fixing and suited to Alfisol soils with moderate rainfall. The leading cash crop for smallholders in Chikkaballapur.'
+  },
+  'Sorghum': {
+    emoji: '🌽',
+    color: '#b06020',
+    minRain: 120, maxRain: 350,
+    minAvgT: 20, maxAvgT: 26,
+    minN: 150, maxN: 210,
+    minPH: 6.0, maxPH: 6.8,
+    season: 1,
+    note: 'Sorghum is drought-tolerant and ideal for dry Rabi seasons with low rainfall. Well-adapted to red sandy loam Alfisols.'
+  },
+  'Pulses': {
+    emoji: '🫘',
+    color: '#7a6a30',
+    minRain: 150, maxRain: 400,
+    minAvgT: 19, maxAvgT: 25,
+    minN: 145, maxN: 200,
+    minPH: 6.0, maxPH: 7.0,
+    season: 1,
+    note: 'Pulses fix atmospheric nitrogen, making them ideal Rabi crops that improve soil fertility in low-N Alfisols.'
+  },
+  'Sunflower': {
+    emoji: '🌻',
+    color: '#e8a020',
+    minRain: 140, maxRain: 380,
+    minAvgT: 20, maxAvgT: 27,
+    minN: 148, maxN: 200,
+    minPH: 5.8, maxPH: 6.8,
+    season: 1,
+    note: 'Sunflower is a high-value Rabi oilseed crop suited to cool, dry conditions and low rainfall. Requires moderate soil fertility.'
+  },
+  'Tomato': {
+    emoji: '🍅',
+    color: '#c0381a',
+    minRain: 750, maxRain: 1000,
+    minAvgT: 24, maxAvgT: 30,
+    minN: 165, maxN: 230,
+    minPH: 5.8, maxPH: 6.7,
+    season: 0,
+    note: 'Tomato demands higher nitrogen, moderate rainfall, and warm temperatures. A high-value Kharif vegetable cash crop.'
+  },
+  'Horsegram': {
+    emoji: '🫘',
+    color: '#8a7040',
+    minRain: 500, maxRain: 850,
+    minAvgT: 22, maxAvgT: 29,
+    minN: 155, maxN: 210,
+    minPH: 5.8, maxPH: 6.9,
+    season: 0,
+    note: 'Horsegram is a drought-hardy legume that grows in moderate rainfall Kharif conditions and helps restore soil nitrogen.'
+  },
+  'Mulberry': {
+    emoji: '🍃',
+    color: '#4a6838',
+    minRain: 800, maxRain: 1100,
+    minAvgT: 24, maxAvgT: 30,
+    minN: 175, maxN: 240,
+    minPH: 5.8, maxPH: 6.6,
+    season: 0,
+    note: 'Mulberry requires high rainfall, warm temperatures, and fertile soils. Cultivated for sericulture (silk production) in Karnataka.'
+  },
+  'Rice': {
+    emoji: '🌾',
+    color: '#3a7a50',
+    minRain: 880, maxRain: 1100,
+    minAvgT: 25, maxAvgT: 30,
+    minN: 180, maxN: 250,
+    minPH: 5.9, maxPH: 6.5,
+    season: 0,
+    note: 'Rice requires the highest rainfall and nitrogen of all recommended crops. Suitable only in high-rainfall Kharif years.'
+  }
+};
+
+// Feature importance from the actual project
+const FI = [
+  { label: 'Rainfall', score: 0.28 },
+  { label: 'Nitrogen (N)', score: 0.19 },
+  { label: 'Avg Temp', score: 0.16 },
+  { label: 'NPK Sum', score: 0.12 },
+  { label: 'Humidity', score: 0.09 },
+  { label: 'Soil pH', score: 0.07 },
+  { label: 'Potassium (K)', score: 0.04 },
+  { label: 'Phosphorus (P)', score: 0.03 },
+  { label: 'Temp Range', score: 0.02 },
+];
+
+// ─── SCORING ENGINE ─────────────────────────────────────────────────────────
+function scoreCrop(name, info, inputs) {
+  let score = 0;
+  const { rain, avgT, maxT, minT, hum, pH, N, P, K, season } = inputs;
+  const tempRange = maxT - minT;
+  const npkSum = N + P + K;
+
+  // Rainfall match (weight 0.28)
+  if (rain >= info.minRain && rain <= info.maxRain) score += 28;
+  else {
+    const dist = rain < info.minRain ? info.minRain - rain : rain - info.maxRain;
+    score += Math.max(0, 28 - dist * 0.06);
+  }
+
+  // Nitrogen (weight 0.19)
+  if (N >= info.minN && N <= info.maxN) score += 19;
+  else {
+    const dist = N < info.minN ? info.minN - N : N - info.maxN;
+    score += Math.max(0, 19 - dist * 0.15);
+  }
+
+  // Avg Temp (weight 0.16)
+  if (avgT >= info.minAvgT && avgT <= info.maxAvgT) score += 16;
+  else {
+    const dist = avgT < info.minAvgT ? info.minAvgT - avgT : avgT - info.maxAvgT;
+    score += Math.max(0, 16 - dist * 2.5);
+  }
+
+  // pH (weight 0.07)
+  if (pH >= info.minPH && pH <= info.maxPH) score += 7;
+  else {
+    const dist = pH < info.minPH ? info.minPH - pH : pH - info.maxPH;
+    score += Math.max(0, 7 - dist * 8);
+  }
+
+  // Season match (strong signal)
+  if (info.season === -1 || info.season === season) score += 20;
+  else score -= 12;
+
+  // Humidity and NPK sum (smaller weights)
+  score += Math.min(9, 9 * (1 - Math.abs(hum - 65) / 60));
+  const npkDist = Math.abs(npkSum - (info.minN + info.minP_approx + info.minK_approx || 400));
+  score += Math.max(0, 12 - npkDist * 0.02);
+
+  return Math.max(0, score);
+}
+
+// Simpler, agronomically-driven recommendation engine
+function getRecommendation(inputs) {
+  const { rain, avgT, maxT, minT, hum, pH, N, P, K, season } = inputs;
+  const tempRange = maxT - minT;
+  const npkSum = N + P + K;
+
+  let best = null, bestScore = -1;
+  const scores = {};
+
+  for (const [name, info] of Object.entries(CROPS)) {
+    let s = 0;
+
+    // Rainfall score (28%)
+    const rRange = info.maxRain - info.minRain;
+    const rMid = (info.maxRain + info.minRain) / 2;
+    s += 28 * Math.max(0, 1 - Math.abs(rain - rMid) / (rRange + 300));
+
+    // Nitrogen score (19%)
+    const nRange = info.maxN - info.minN;
+    const nMid = (info.maxN + info.minN) / 2;
+    s += 19 * Math.max(0, 1 - Math.abs(N - nMid) / (nRange + 40));
+
+    // Avg Temp score (16%)
+    const tRange = info.maxAvgT - info.minAvgT;
+    const tMid = (info.maxAvgT + info.minAvgT) / 2;
+    s += 16 * Math.max(0, 1 - Math.abs(avgT - tMid) / (tRange + 4));
+
+    // pH (7%)
+    const phRange = info.maxPH - info.minPH;
+    const phMid = (info.maxPH + info.minPH) / 2;
+    s += 7 * Math.max(0, 1 - Math.abs(pH - phMid) / (phRange + 0.5));
+
+    // Humidity (9%)
+    s += 9 * Math.max(0, 1 - Math.abs(hum - 65) / 50);
+
+    // Season affinity (big signal)
+    if (info.season === -1) s += 15;
+    else if (info.season === season) s += 22;
+    else s -= 18;
+
+    // Temp range (2%)
+    s += 2 * Math.max(0, 1 - Math.abs(tempRange - 13) / 12);
+
+    // NPK sum proxy (3%)
+    const npkMid = ((info.maxN + info.minN) / 2) + 16 + 200;
+    s += 3 * Math.max(0, 1 - Math.abs(npkSum - npkMid) / 150);
+
+    scores[name] = Math.round(Math.max(0, s) * 10) / 10;
+    if (s > bestScore) { bestScore = s; best = name; }
+  }
+
+  return { crop: best, scores, info: CROPS[best] };
+}
+
+// ─── WHY REASONS ────────────────────────────────────────────────────────────
+function getReasonsHTML(crop, info, inputs) {
+  const { rain, avgT, N, pH, season } = inputs;
+  const reasons = [];
+
+  const rOk = rain >= info.minRain && rain <= info.maxRain;
+  reasons.push({
+    icon: '💧', bg: '#e8f4e8', iconBg: '#c8e8c8',
+    title: `Rainfall: ${rain} mm`,
+    text: rOk
+      ? `Within ideal range (${info.minRain}–${info.maxRain} mm). Good seasonal water availability.`
+      : `Outside ideal range but closest match among all crop options.`
+  });
+
+  const nOk = N >= info.minN && N <= info.maxN;
+  reasons.push({
+    icon: '🌿', bg: '#fdf6eb', iconBg: '#f5e4c0',
+    title: `Nitrogen: ${N} kg/ha`,
+    text: nOk
+      ? `Adequate N for ${crop}. Matches this crop's macronutrient demand.`
+      : `N level is ${N < info.minN ? 'below' : 'above'} ideal. Consider ${N < info.minN ? 'adding fertiliser' : 'nitrogen-efficient crop management'}.`
+  });
+
+  const tOk = avgT >= info.minAvgT && avgT <= info.maxAvgT;
+  reasons.push({
+    icon: '🌡️', bg: '#fff8f0', iconBg: '#fde8c0',
+    title: `Avg Temp: ${avgT.toFixed(1)} °C`,
+    text: tOk
+      ? `Ideal growing temperature for ${crop}. Phenological development will be on schedule.`
+      : `Temperature is marginal but ${crop} has the highest overall suitability score.`
+  });
+
+  const sLabel = season === 0 ? 'Kharif' : 'Rabi';
+  const sFit = info.season === -1 || info.season === season;
+  reasons.push({
+    icon: '📅', bg: '#f0f4ff', iconBg: '#c8d4f0',
+    title: `Season: ${sLabel}`,
+    text: sFit
+      ? `${crop} is traditionally cultivated in the ${sLabel} season in Chikkaballapur.`
+      : `Cross-season cultivation possible with management interventions.`
+  });
+
+  return reasons.map(r => `
+    <div class="why-item" style="background:${r.bg}; border-color: rgba(0,0,0,0.05)">
+      <div class="why-icon" style="background:${r.iconBg}">${r.icon}</div>
+      <div class="why-text">
+        <strong>${r.title}</strong>
+        <span>${r.text}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── MAIN RECOMMEND FUNCTION ─────────────────────────────────────────────────
+function recommend() {
+  const season = parseInt(document.querySelector('input[name="season"]:checked').value);
+  const inputs = {
+    rain: parseFloat(document.getElementById('rainfall').value),
+    avgT: parseFloat(document.getElementById('avg_temp').value),
+    maxT: parseFloat(document.getElementById('max_temp').value),
+    minT: parseFloat(document.getElementById('min_temp').value),
+    hum: parseFloat(document.getElementById('humidity').value),
+    pH: parseFloat(document.getElementById('ph').value),
+    N: parseFloat(document.getElementById('nitrogen').value),
+    P: parseFloat(document.getElementById('phosphorus').value),
+    K: parseFloat(document.getElementById('potassium').value),
+    season
+  };
+
+  const { crop, scores, info } = getRecommendation(inputs);
+  const allScores = Object.values(scores);
+  const maxS = Math.max(...allScores);
+  const confidence = Math.round((maxS / 90) * 100);
+  const confClamped = Math.min(99, Math.max(60, confidence));
+
+  document.getElementById('result-crop-name').textContent = `${info.emoji} ${crop}`;
+  document.getElementById('result-rationale').textContent = info.note;
+  document.getElementById('why-grid').innerHTML = getReasonsHTML(crop, info, inputs);
+
+  // Confidence
+  setTimeout(() => {
+    document.getElementById('conf-fill').style.width = confClamped + '%';
+    document.getElementById('conf-label').textContent = confClamped + '%';
+  }, 100);
+
+  // Feature importance bars
+  document.getElementById('fi-bars').innerHTML = FI.map(f => `
+    <div class="fi-row">
+      <div class="fi-label">${f.label}</div>
+      <div class="fi-bar-bg">
+        <div class="fi-bar" style="width:${f.score * 280}px; max-width:100%"></div>
+      </div>
+      <div class="fi-score">${f.score.toFixed(2)}</div>
+    </div>
+  `).join('');
+
+  // Show result
+  const rs = document.getElementById('result-section');
+  rs.style.display = 'block';
+  rs.style.animation = 'none';
+  rs.offsetHeight; // reflow
+  rs.style.animation = '';
+  rs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function resetForm() {
+  document.getElementById('result-section').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
